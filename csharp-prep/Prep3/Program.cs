@@ -6,39 +6,50 @@ class Program
     {
         do
         {
-            //Core Requirement 1: Ask for the  magic number
-            Console.WriteLine("Welcome to Guess My Number! ");
+            PlayGame();
+        } while (PlayAgain());
+    }
+    static void PlayGame()
+    
+    {
+        // Generate a random number between 1 and 100
+        Random random = new Random();
+        int magicNumber = random.Next(1, 101);
 
-            Console.Write("What is the magic number? ");
-            int magicNumber = int.Parse(Console.ReadLine());
+        int guess;
+        int attempts = 0;
 
-            //Core Requirement 2: Add a loop for the game
-            int guess;
-            int guessCount = 0;
-        
-            do
+        Console.WriteLine("Welcome to the Guess My Number game!");
+        Console.WriteLine("I've picked a magic number between 1 and 100. Try to guess it.");
+
+        do
+        {
+            Console.Write("What is your guess? ");
+            guess = int.Parse(Console.ReadLine());
+            attempts++;
+
+            if (guess < magicNumber)
             {
-                //Core Requirement 3: Ask for a guess
-                Console.Write("What is your guess? ");
-                guess = int.Parse(Console.ReadLine());
-                guessCount++;
+                Console.WriteLine("Higher");
+            }
+            else if (guess > magicNumber)
+            {
+                Console.WriteLine("Lower");
+            }
+            else
+            {
+                Console.WriteLine("You guessed it!");
+            }
 
-                //Core Requirement 4: Check if the guess is higher, lower, or correct
-                if (guess < magicNumber)
-                    Console.WriteLine("Higher");
-                else if (guess > magicNumber)
-                    Console.WriteLine("Lower");
-                else
-                    Console.WriteLine("Correct! You guessed right. ");
+        } while (guess != magicNumber);
 
-            } while (guess != magicNumber);
+        Console.WriteLine($"It took you {attempts} attempts to guess the magic number.");
+    }
+    static bool PlayAgain()
+    {
+        Console.Write("Do you want to play again? (yes/no): ");
+        string playAgain = Console.ReadLine().ToLower();
 
-            //Stretch Chaallenge: Inform the user of the number of guesses
-            Console.WriteLine($"You guessed the correct number in {guessCount} {(guessCount == 1 ? "guess" : "guesses")}.");
-            
-            //Stretch Challenge: Ask if the user want to play again
-            Console.Write("Do you want to play again? (yes/no): ");
-
-        } while (Console.ReadLine().ToLower() == "yes");
+        return playAgain == "yes";
     }
 }

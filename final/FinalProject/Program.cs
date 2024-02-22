@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 
 class Program
 {
@@ -138,12 +136,12 @@ class Program
 
     private static void UpdateSavingsBalance(double amount)
     {
-        throw new NotImplementedException();
+        
     }
 
     private static void SetSavingsGoal(double goal)
     {
-        throw new NotImplementedException();
+        
     }
 
     static void ReportGeneratorActivity()
@@ -157,7 +155,7 @@ class Program
 
     private static void GenerateReports()
     {
-        throw new NotImplementedException();
+        
     }
 
     static void DataStorageActivity()
@@ -176,12 +174,12 @@ class Program
 
     private static void LoadData()
     {
-        throw new NotImplementedException();
+        
     }
 
     private static void SaveData()
     {
-        throw new NotImplementedException();
+
     }
 
     static Validation validation = new Validation();

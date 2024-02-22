@@ -11,7 +11,7 @@ class PersonalFinanceManager
     {
         incomeList = new List<Income>();
         expenseList = new List<Expense>();
-        dataStorage = new DataStorage("financial_data.dat"); // Change file extension to .dat
+        dataStorage = new DataStorage("financial_data.json"); // Change file extension to .json
         validation = new Validation();
         reportGenerator = new ReportGenerator();
     }
@@ -19,36 +19,40 @@ class PersonalFinanceManager
     public void AddIncome(string source, double amount, string frequency)
     {
         Income income = new Income(source, amount, frequency);
-        // Validate income data
-        incomeList.Add(income);
+        if (validation.ValidateIncome(source, amount, frequency))
+            incomeList.Add(income);
     }
 
     public void AddExpense(string category, double amount, DateTime date)
     {
         Expense expense = new Expense(category, amount, date);
-        // Validate expense data
-        expenseList.Add(expense);
+        if (validation.ValidateExpense(category, amount, date))
+            expenseList.Add(expense);
     }
 
     public void SetSavingsGoal(double goal)
+{
+    if (savingsObj == null)
     {
-        // Validate savings goal
         savingsObj = new Savings(goal);
     }
+    else
+    {
+        savingsObj.Goal = goal;
+    }
+}
 
     public void UpdateSavingsBalance(double amount)
     {
         if (savingsObj != null)
-        {
             savingsObj.Balance += amount;
-        }
     }
 
     public void GenerateReports()
     {
-        Dictionary<string, double> incomeBreakdown = reportGenerator.GenerateIncomeBreakdown(incomeList);
-        Dictionary<string, double> expenseCategories = reportGenerator.GenerateExpenseCategories(expenseList);
-        double savingsProgress = (savingsObj != null) ? reportGenerator.GenerateSavingsProgress(savingsObj) : 0;
+        var incomeBreakdown = reportGenerator.GenerateIncomeBreakdown(incomeList);
+        var expenseCategories = reportGenerator.GenerateExpenseCategories(expenseList);
+        double savingsProgress = (savingsObj != null) ? reportGenerator.CalculateSavingsProgress(savingsObj) : 0;
 
         Console.WriteLine("Income Breakdown:");
         foreach (var item in incomeBreakdown)
@@ -67,63 +71,21 @@ class PersonalFinanceManager
 
     public void SaveData()
     {
-        try
-        {
-            using (StreamWriter writer = new StreamWriter("financial_data.txt"))
-            {
-                foreach (var income in incomeList)
-                {
-                    writer.WriteLine($"Income|{income.Source}|{income.Amount}|{income.Frequency}");
-                }
-                foreach (var expense in expenseList)
-                {
-                    writer.WriteLine($"Expense|{expense.Category}|{expense.Amount}|{expense.Date:yyyy-MM-dd}");
-                }
-                if (savingsObj != null)
-                {
-                    writer.WriteLine($"Savings|{savingsObj.Goal}|{savingsObj.Balance}");
-                }
-                Console.WriteLine("Data saved successfully.");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error saving data: {ex.Message}");
-        }
+        dataStorage.SaveData(this);
+        Console.WriteLine("Data saved successfully.");
     }
 
     public void LoadData()
     {
-        try
+        var loadedData = dataStorage.LoadData();
+        if (loadedData != null)
         {
-            incomeList.Clear();
-            expenseList.Clear();
-
-            string[] lines = File.ReadAllLines("financial_data.txt");
-            foreach (string line in lines)
-            {
-                string[] parts = line.Split('|');
-                if (parts.Length > 0)
-                {
-                    switch (parts[0])
-                    {
-                        case "Income":
-                            incomeList.Add(new Income(parts[1], double.Parse(parts[2]), parts[3]));
-                            break;
-                        case "Expense":
-                            expenseList.Add(new Expense(parts[1], double.Parse(parts[2]), DateTime.Parse(parts[3])));
-                            break;
-                        case "Savings":
-                            savingsObj = new Savings(double.Parse(parts[1]), double.Parse(parts[2]));
-                            break;
-                    }
-                }
-            }
+            incomeList = loadedData.incomeList;
+            expenseList = loadedData.expenseList;
+            savingsObj = loadedData.savingsObj;
             Console.WriteLine("Data loaded successfully.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading data: {ex.Message}");
         }
     }
 }
+
+

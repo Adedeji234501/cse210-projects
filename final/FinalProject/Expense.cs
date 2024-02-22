@@ -1,4 +1,3 @@
-// Expense Class
 class Expense
 {
     public string Category { get; set; }

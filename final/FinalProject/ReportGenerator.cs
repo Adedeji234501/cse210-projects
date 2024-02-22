@@ -1,36 +1,42 @@
-// Report Generator Class
+using System.Collections.Generic;
+
 class ReportGenerator
 {
     public Dictionary<string, double> GenerateIncomeBreakdown(List<Income> incomeList)
     {
-        Dictionary<string, double> breakdown = new Dictionary<string, double>();
-        foreach (var income in incomeList)
+        Dictionary<string, double> incomeBreakdown = new Dictionary<string, double>();
+
+        foreach (Income income in incomeList)
         {
-            if (!breakdown.ContainsKey(income.Frequency))
-            {
-                breakdown.Add(income.Frequency, 0);
-            }
-            breakdown[income.Frequency] += income.Amount;
+            if (incomeBreakdown.ContainsKey(income.Source))
+                incomeBreakdown[income.Source] += income.Amount;
+            else
+                incomeBreakdown[income.Source] = income.Amount;
         }
-        return breakdown;
+
+        return incomeBreakdown;
     }
 
     public Dictionary<string, double> GenerateExpenseCategories(List<Expense> expenseList)
     {
-        Dictionary<string, double> categories = new Dictionary<string, double>();
-        foreach (var expense in expenseList)
+        Dictionary<string, double> expenseCategories = new Dictionary<string, double>();
+
+        foreach (Expense expense in expenseList)
         {
-            if (!categories.ContainsKey(expense.Category))
-            {
-                categories.Add(expense.Category, 0);
-            }
-            categories[expense.Category] += expense.Amount;
+            if (expenseCategories.ContainsKey(expense.Category))
+                expenseCategories[expense.Category] += expense.Amount;
+            else
+                expenseCategories[expense.Category] = expense.Amount;
         }
-        return categories;
+
+        return expenseCategories;
     }
 
-    public double GenerateSavingsProgress(Savings savingsObj)
+    public double CalculateSavingsProgress(Savings savings)
     {
-        return (savingsObj.Balance / savingsObj.Goal) * 100;
+        if (savings == null || savings.Goal <= 0)
+            return 0;
+
+        return savings.Balance / savings.Goal * 100;
     }
 }

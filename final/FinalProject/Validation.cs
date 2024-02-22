@@ -1,4 +1,3 @@
-// Validation Class
 class Validation
 {
     public bool ValidateIncome(string source, double amount, string frequency)

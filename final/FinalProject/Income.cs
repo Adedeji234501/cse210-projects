@@ -1,4 +1,3 @@
-// Income Class
 class Income
 {
     public string Source { get; set; }
